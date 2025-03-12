@@ -498,6 +498,70 @@ Node* uniqueSortList(Node* head){
   }
 
 //Q11 MERGE TWO SORTED LINKED LIST :-
+class Node {
+public:
+    int data;
+    Node* next;
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
+};
+
+Node* findMid(Node* head) {
+    Node* slow = head;
+    Node* fast = head;  // Fix: Start fast at head instead of head->next
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+Node* merge(Node* left, Node* right) {
+    if (left == NULL) return right;
+    if (right == NULL) return left;
+
+    Node* ans = new Node(-1); // Dummy node
+    Node* temp = ans;
+
+    while (left != NULL && right != NULL) {
+        if (left->data < right->data) {
+            temp->next = left;
+            temp = temp->next; // Fix: Move temp properly
+            left = left->next;
+        } else {
+            temp->next = right;
+            temp = temp->next; // Fix: Move temp properly
+            right = right->next;
+        }
+    }
+
+    if (left != NULL) temp->next = left;
+    if (right != NULL) temp->next = right;
+
+    Node* result = ans->next; 
+    delete ans; // Fix: Free the dummy node to avoid memory leak
+    return result;
+}
+
+Node* mergeSort(Node* head) {
+    if (head == NULL || head->next == NULL) {
+        return head;
+    }
+
+    Node* mid = findMid(head);
+    Node* left = head;
+    Node* right = mid->next;
+    mid->next = NULL;
+
+    left = mergeSort(left);
+    right = mergeSort(right);
+
+    return merge(left, right);
+}
+
   
 
 
